@@ -1,0 +1,17 @@
+.row{
+    margin-top: 0px;
+    display: flex;
+    justify-content: center;
+}
+
+.visited{
+    background-color: red;
+}
+
+.startPoint{
+    background-color: blue;
+}
+
+.endPoint{
+    background-color: yellow;
+}

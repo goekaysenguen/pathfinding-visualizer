@@ -1,0 +1,4 @@
+<button (click)="callBfs()">bfs</button>
+<div class="row" *ngFor="let numberRow of numbersRow">
+    <app-node *ngFor="let numberColumn of numbersColumn" [class.visited]="isVisited[numberColumn][numberRow]" [class.startPoint]="isStartPoint(numberColumn, numberRow)" [class.endPoint]="isEndPoint(numberColumn, numberRow)"></app-node>
+</div>
