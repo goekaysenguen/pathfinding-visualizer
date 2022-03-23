@@ -17,6 +17,10 @@
     background-color: yellow;
 }
 
+.wall{
+  background-color: rgb(25, 52, 69);
+}
+
 @keyframes visitedStartNodeBlueAnimation {
     0% {
       transform: scale(.3);

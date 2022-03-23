@@ -48,7 +48,7 @@ export class AlgorithmService {
   visited: Subject<Point[]> = new Subject<Point[]>();
   constructor() { }
 
-  bfs(startPoint: Point, endPoint: Point, rows: number, cols: number){
+  bfs(startPoint: Point, endPoint: Point, rows: number, cols: number, wall: boolean[][]){
     let q: Queue<Point> = new Queue<Point>();
     let visited: Point[] = [];
     q.enqueue(startPoint);
@@ -63,7 +63,7 @@ export class AlgorithmService {
       }
       for(let i = 0; i<4; i++){
         let newPoint: Point = {x: tmp.x + dx[i],y: tmp.y + dy[i], beforePoint: {x: tmp.x, y: tmp.y}};
-        if(newPoint.x < 0 || newPoint.x >= cols || newPoint.y < 0 || newPoint.y >= rows){
+        if(newPoint.x < 0 || newPoint.x >= cols || newPoint.y < 0 || newPoint.y >= rows || wall[newPoint.x][newPoint.y]){
           continue;
         }
         q.enqueue(newPoint);

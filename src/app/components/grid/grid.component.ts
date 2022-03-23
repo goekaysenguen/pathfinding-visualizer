@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { AlgorithmService } from 'src/app/services/algorithm.service';
 import { Point } from 'src/app/Point';
 
@@ -15,7 +15,9 @@ export class GridComponent implements OnInit {
   visited: Point[] = [];
   @Input() startPoint!: Point;
   @Input() endPoint!: Point;
+  @Output() wallEvent = new EventEmitter<boolean[][]>();
   isVisited: boolean[][] = [];
+  isWall: boolean[][] = [];
 
   constructor(public alg: AlgorithmService) { }
 
@@ -24,6 +26,7 @@ export class GridComponent implements OnInit {
     this.numbersColumn = Array(this.column).fill(1).map((x, i) => {return i});
     for(let i = 0; i<this.column; i++){
       this.isVisited.push(Array(this.row).fill(false));
+      this.isWall.push(Array(this.row).fill(false));
     }
     this.alg.getVisited().subscribe((visited: Point[]) => {this.update(visited)});
   }
@@ -41,5 +44,10 @@ export class GridComponent implements OnInit {
 
   isEndPoint(x: number, y: number){
     return this.endPoint.x === x && this.endPoint.y === y;
+  }
+
+  toggleWall(x: number, y: number){
+    this.isWall[x][y] = !this.isWall[x][y];
+    this.wallEvent.emit(this.isWall);
   }
 }
