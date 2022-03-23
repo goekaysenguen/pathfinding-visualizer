@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AlgorithmService } from 'src/app/services/algorithm.service';
 import { Point } from 'src/app/Point';
 
@@ -8,28 +8,30 @@ import { Point } from 'src/app/Point';
   styleUrls: ['./grid.component.css']
 })
 export class GridComponent implements OnInit {
-  row: number = 30;
-  column: number = 30;
-  numbersRow: number[] = Array(this.row).fill(1).map((x, i) => {return i});
-  numbersColumn: number[] = Array(this.column).fill(1).map((x, i) => {return i});
+  @Input() row!: number;
+  @Input() column!: number;
+  numbersRow: number[] = [];
+  numbersColumn: number[] = [];
   visited: Point[] = [];
-  startPoint: Point = {x: 0, y: 2};
-  endPoint: Point = {x: 0, y: 5};
+  @Input() startPoint!: Point;
+  @Input() endPoint!: Point;
   isVisited: boolean[][] = [];
 
   constructor(public alg: AlgorithmService) { }
 
   ngOnInit(): void {
+    this.numbersRow = Array(this.row).fill(1).map((x, i) => {return i});
+    this.numbersColumn = Array(this.column).fill(1).map((x, i) => {return i});
     for(let i = 0; i<this.column; i++){
       this.isVisited.push(Array(this.row).fill(false));
     }
-    this.alg.getVisited().subscribe((visited: Point[]) => {this.visited = visited});
+    this.alg.getVisited().subscribe((visited: Point[]) => {this.update(visited)});
   }
 
-  callBfs(){
-    this.alg.bfs(this.startPoint, this.endPoint, this.row, this.column);
+  update(visited: Point[]){
+    this.visited = visited;
     for(let i = 0; i<this.visited.length; i++){
-      setTimeout(() => {this.isVisited[this.visited[i].x][this.visited[i].y] = true;}, i*50);
+      setTimeout(() => {this.isVisited[this.visited[i].x][this.visited[i].y] = true;}, i*10);
     }
   }
 

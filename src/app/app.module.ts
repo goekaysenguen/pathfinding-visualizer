@@ -5,12 +5,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NodeComponent } from './components/node/node.component';
 import { GridComponent } from './components/grid/grid.component';
+import { MainComponent } from './components/main/main.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NodeComponent,
-    GridComponent
+    GridComponent,
+    MainComponent
   ],
   imports: [
     BrowserModule,
