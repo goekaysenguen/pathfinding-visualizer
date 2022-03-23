@@ -1,1 +1,5 @@
-<div></div>
+<div [ngClass] = "{
+    visited: isVisited,
+    startPoint: isStart,
+    endPoint: isEnd,
+    wall: isWall}" (click)="toggleWall()"></div>

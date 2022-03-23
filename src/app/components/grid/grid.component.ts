@@ -12,7 +12,6 @@ export class GridComponent implements OnInit {
   @Input() column!: number;
   numbersRow: number[] = [];
   numbersColumn: number[] = [];
-  visited: Point[] = [];
   @Input() startPoint!: Point;
   @Input() endPoint!: Point;
   @Output() wallEvent = new EventEmitter<boolean[][]>();
@@ -32,9 +31,8 @@ export class GridComponent implements OnInit {
   }
 
   update(visited: Point[]){
-    this.visited = visited;
-    for(let i = 0; i<this.visited.length; i++){
-      setTimeout(() => {this.isVisited[this.visited[i].x][this.visited[i].y] = true;}, i*10);
+    for(let i = 0; i<visited.length; i++){
+      setTimeout(() => {this.isVisited[visited[i].x][visited[i].y] = true;}, i*10);
     }
   }
 
