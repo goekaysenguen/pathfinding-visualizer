@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { AlgorithmService } from 'src/app/services/algorithm.service';
 import { Point } from 'src/app/Point';
+import { getInterpolationArgsLength } from '@angular/compiler/src/render3/view/util';
 
 @Component({
   selector: 'app-grid',
@@ -17,6 +18,7 @@ export class GridComponent implements OnInit {
   @Output() wallEvent = new EventEmitter<boolean[][]>();
   isVisited: boolean[][] = [];
   isWall: boolean[][] = [];
+  isPath: boolean[][] = [];
 
   constructor(public alg: AlgorithmService) { }
 
@@ -26,6 +28,7 @@ export class GridComponent implements OnInit {
     for(let i = 0; i<this.column; i++){
       this.isVisited.push(Array(this.row).fill(false));
       this.isWall.push(Array(this.row).fill(false));
+      this.isPath.push(Array(this.row).fill(false));
     }
     this.alg.getVisited().subscribe((visited: Point[]) => {this.update(visited)});
   }
@@ -33,6 +36,10 @@ export class GridComponent implements OnInit {
   update(visited: Point[]){
     for(let i = 0; i<visited.length; i++){
       setTimeout(() => {this.isVisited[visited[i].x][visited[i].y] = true;}, i*10);
+    }
+    let path = this.alg.getPath(visited);
+    for(let i = 0; i<path.length; i++){
+      setTimeout(() => {this.isPath[path[i].x][path[i].y] = true;}, (visited.length+i)*10);
     }
   }
 

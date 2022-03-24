@@ -1,3 +1,3 @@
 <div class="row" *ngFor="let numberRow of numbersRow">
-    <app-node *ngFor="let numberColumn of numbersColumn"[isStart]="isStartPoint(numberColumn, numberRow)" [isEnd]="isEndPoint(numberColumn, numberRow)" [isVisited]="isVisited[numberColumn][numberRow]" (event)="toggleWall(numberColumn, numberRow)"></app-node>
+    <app-node *ngFor="let numberColumn of numbersColumn" [isStart]="isStartPoint(numberColumn, numberRow)" [isEnd]="isEndPoint(numberColumn, numberRow)" [isVisited]="isVisited[numberColumn][numberRow]"  [isPath]="isPath[numberColumn][numberRow]" (event)="toggleWall(numberColumn, numberRow)"></app-node>
 </div>

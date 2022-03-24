@@ -62,7 +62,7 @@ export class AlgorithmService {
         break;
       }
       for(let i = 0; i<4; i++){
-        let newPoint: Point = {x: tmp.x + dx[i],y: tmp.y + dy[i], beforePoint: {x: tmp.x, y: tmp.y}};
+        let newPoint: Point = {x: tmp.x + dx[i],y: tmp.y + dy[i], beforePoint: tmp};
         if(newPoint.x < 0 || newPoint.x >= cols || newPoint.y < 0 || newPoint.y >= rows || wall[newPoint.x][newPoint.y]){
           continue;
         }
@@ -70,6 +70,16 @@ export class AlgorithmService {
       }
     }
     this.visited.next(visited);
+  }
+
+  getPath(visited: Point[]): Point[]{
+    let path: Point[] = [];
+    let tmp: Point | undefined = visited[visited.length-1];
+    while(tmp){
+      path.push(tmp);
+      tmp = tmp.beforePoint;
+    }
+    return path.reverse();
   }
 
   getVisited(): Subject<Point[]>{

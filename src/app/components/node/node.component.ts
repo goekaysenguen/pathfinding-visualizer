@@ -10,8 +10,9 @@ export class NodeComponent implements OnInit {
   @Input() isStart!: boolean
   @Input() isEnd!: boolean
   @Input() isVisited: boolean = false;
+  @Input() isPath: boolean = false;
   @Output() event = new EventEmitter<boolean>();
-  isWall: boolean = false
+  isWall: boolean = false;
 
   constructor(private alg: AlgorithmService) { }
 

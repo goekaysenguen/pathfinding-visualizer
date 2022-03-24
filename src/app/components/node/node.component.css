@@ -5,7 +5,7 @@ div{
 }
 
 .visited{
-    background-color: rgba(178, 67, 255, 0.75);
+    background-color: rgba(0, 190, 218, 0.75);
     animation: visitedStartNodeBlueAnimation 2.0s ease-out 0s alternate forwards;
 }
 
@@ -14,11 +14,33 @@ div{
 }
 
 .endPoint{
-    background-color: yellow;
+    background-color: red;
 }
 
 .wall{
-  background-color: rgb(25, 52, 69);
+  background-color: rgba(25, 52, 69, 1);
+  border: 1px solid rgba(25, 52, 69, 1);
+}
+
+.path{
+  background-color: yellow;
+  animation: pathAnimation 1.0s ease-out 0s alternate forwards;
+  border: 1px solid yellow;
+}
+
+@keyframes pathAnimation{
+  0%{
+    transform: scale(.9);
+  }
+
+  75%{
+    transform: scale(1.2);
+  }
+
+  100%{
+    transform: scale(1.0);
+    background-color: yellow;
+  }
 }
 
 @keyframes visitedStartNodeBlueAnimation {
