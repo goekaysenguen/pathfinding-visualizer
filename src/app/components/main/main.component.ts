@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AlgorithmService } from 'src/app/services/algorithm.service';
+import { AlgorithmService, Algorithm } from 'src/app/services/algorithm.service';
 import { Point } from 'src/app/Point';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-main',
@@ -8,23 +9,31 @@ import { Point } from 'src/app/Point';
   styleUrls: ['./main.component.css']
 })
 export class MainComponent implements OnInit {
-  row: number = 30;
-  column: number = 30;
+  row = 30;
+  column = 30;
   startPoint: Point = {x: 0, y: 2};
-  endPoint: Point = {x: 20, y: 5};
+  endPoint: Point = {x: 0, y: 5};
   isWall: boolean[][] = [];
-  
+  bfs: Algorithm = Algorithm.BFS;
+  dfs: Algorithm = Algorithm.DFS;
+
+  clearMessage = new Subject<void>();
+
   constructor(public alg: AlgorithmService) { }
 
   ngOnInit(): void {
+    this.resetWall();
+  }
+
+  resetWall(){
+    this.isWall = [];
     for(let i = 0; i<this.column; i++){
       this.isWall.push(Array(this.row).fill(false));
     }
   }
 
-  wallEvent(newWall: boolean[][]){
-    this.isWall = newWall;
-    console.log(this.isWall);
+  clear(){
+    this.resetWall();
+    this.clearMessage.next();
   }
-
 }

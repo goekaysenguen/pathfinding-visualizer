@@ -1,36 +1,48 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { AlgorithmService } from 'src/app/services/algorithm.service';
 import { Point } from 'src/app/Point';
-import { getInterpolationArgsLength } from '@angular/compiler/src/render3/view/util';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-grid',
   templateUrl: './grid.component.html',
-  styleUrls: ['./grid.component.css']
+  styleUrls: ['./grid.component.css'],
 })
 export class GridComponent implements OnInit {
   @Input() row!: number;
   @Input() column!: number;
   numbersRow: number[] = [];
   numbersColumn: number[] = [];
+
+  isVisited: boolean[][] = []
+  isPath: boolean[][] = [];
+  @Input() isWall: boolean[][] = [];
+  @Output() isWallChange: EventEmitter<boolean[][]> = new EventEmitter();
+
   @Input() startPoint!: Point;
   @Input() endPoint!: Point;
-  @Output() wallEvent = new EventEmitter<boolean[][]>();
-  isVisited: boolean[][] = [];
-  isWall: boolean[][] = [];
-  isPath: boolean[][] = [];
 
-  constructor(public alg: AlgorithmService) { }
+  @Input() clear!: Observable<void>;
+
+
+
+  constructor(private alg: AlgorithmService) { }
 
   ngOnInit(): void {
     this.numbersRow = Array(this.row).fill(1).map((x, i) => {return i});
     this.numbersColumn = Array(this.column).fill(1).map((x, i) => {return i});
+    this.resetVisitedAndPath();
+    this.alg.getVisited().subscribe((visited: Point[]) => {this.update(visited)});
+    this.clear.subscribe(() => {this.resetVisitedAndPath()});
+  }
+
+  resetVisitedAndPath(){
+    this.isVisited = [];
+    this.isPath = [];
     for(let i = 0; i<this.column; i++){
       this.isVisited.push(Array(this.row).fill(false));
-      this.isWall.push(Array(this.row).fill(false));
       this.isPath.push(Array(this.row).fill(false));
     }
-    this.alg.getVisited().subscribe((visited: Point[]) => {this.update(visited)});
   }
 
   update(visited: Point[]){
@@ -52,7 +64,7 @@ export class GridComponent implements OnInit {
   }
 
   toggleWall(x: number, y: number){
-    this.isWall[x][y] = !this.isWall[x][y];
-    this.wallEvent.emit(this.isWall);
+    this.isWall[x][y] = true;
+    this.isWallChange.emit(this.isWall);
   }
 }

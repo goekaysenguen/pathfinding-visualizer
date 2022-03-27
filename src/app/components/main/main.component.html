@@ -1,2 +1,3 @@
-<button (click)="alg.bfs(startPoint, endPoint, row, column, isWall)">bfs</button>
-<app-grid [row]="row" [column]="column" [startPoint]="startPoint" [endPoint]="endPoint" (wallEvent)="wallEvent($event)"></app-grid>
+<button (click)="alg.callAlgorithm(startPoint, endPoint, row, column, isWall, bfs)">bfs</button>
+<button (click)="clear()">clear</button>
+<app-grid [row]="row" [column]="column" [startPoint]="startPoint" [endPoint]="endPoint" [(isWall)]="isWall" [clear]="clearMessage.asObservable()"></app-grid>
