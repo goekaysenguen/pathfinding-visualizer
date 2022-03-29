@@ -9,8 +9,8 @@ import { Subject } from 'rxjs';
   styleUrls: ['./main.component.css']
 })
 export class MainComponent implements OnInit {
-  row = 30;
-  column = 30;
+  row = 20;
+  column = 50;
   startPoint: Point = {x: 0, y: 2};
   endPoint: Point = {x: 0, y: 5};
   isWall: boolean[][] = [];

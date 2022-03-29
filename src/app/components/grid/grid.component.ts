@@ -2,6 +2,7 @@ import { Component, Input, OnInit, Output, EventEmitter, SimpleChanges } from '@
 import { AlgorithmService } from 'src/app/services/algorithm.service';
 import { Point } from 'src/app/Point';
 import { Observable } from 'rxjs';
+import { NumberValueAccessor } from '@angular/forms';
 
 @Component({
   selector: 'app-grid',
@@ -20,11 +21,17 @@ export class GridComponent implements OnInit {
   @Output() isWallChange: EventEmitter<boolean[][]> = new EventEmitter();
 
   @Input() startPoint!: Point;
+  @Output() startPointChange = new EventEmitter<Point>();
   @Input() endPoint!: Point;
+  @Output() endPointChange = new EventEmitter<Point>();
 
   @Input() clear!: Observable<void>;
 
 
+  makeWall: boolean = false;
+  deleteWall: boolean = false;
+  mooveStart: boolean = false;
+  mooveEnd: boolean = false;
 
   constructor(private alg: AlgorithmService) { }
 
@@ -63,8 +70,54 @@ export class GridComponent implements OnInit {
     return this.endPoint.x === x && this.endPoint.y === y;
   }
 
-  toggleWall(x: number, y: number){
+  handleMouseDown(x: number, y: number){
+    if(this.isStartPoint(x, y)){
+      this.mooveStart = true;
+    }
+    else if(this.isEndPoint(x, y)){
+      this.mooveEnd = true;
+    }
+    else if(!this.isWall[x][y]){
+      this.makeWall = true;
+      this.addWall(x, y);
+    }
+    else{
+      this.deleteWall = true;
+      this.removeWall(x, y);
+    }
+  }
+
+  handleMouseUp(x: number, y: number){
+    this.mooveStart = false;
+    this.mooveEnd = false;
+    this.makeWall = false;
+    this.deleteWall = false;
+  }
+
+  handleMouseOver(x: number, y: number){
+    if(this.mooveStart){
+      this.startPoint = {x: x, y: y};
+      this.startPointChange.emit(this.startPoint);
+    }
+    else if(this.mooveEnd){
+      this.endPoint = {x: x, y: y};
+      this.endPointChange.emit(this.endPoint);
+    }
+    else if(this.makeWall){
+      this.addWall(x, y);
+    }
+    else if(this.deleteWall){
+      this.removeWall(x, y);
+    }
+  }
+
+  addWall(x: number, y: number){
     this.isWall[x][y] = true;
+    this.isWallChange.emit(this.isWall);
+  }
+
+  removeWall(x: number, y: number){
+    this.isWall[x][y] = false;
     this.isWallChange.emit(this.isWall);
   }
 }

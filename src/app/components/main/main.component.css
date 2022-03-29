@@ -1,0 +1,17 @@
+.nav{
+    background-color: rgba(25, 52, 69, 1);
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    margin-bottom: 10px;
+}
+
+button{
+    background-color: transparent;
+    color: white;
+    border: 0;
+}
+
+button:hover{
+    color: gray;
+}
