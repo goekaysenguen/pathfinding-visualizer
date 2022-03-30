@@ -9,18 +9,22 @@ import { NodeComponent } from '../node/node.component';
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })
+
 export class MainComponent implements OnInit {
+  
   row = 20;
   column = (window.screen.width / NodeComponent.nodeSize)-1;
   startPoint: Point = {x: 0, y: 2};
   endPoint: Point = {x: 0, y: 5};
   isWall: boolean[][] = [];
-  bfs: Algorithm = Algorithm.BFS;
-  dfs: Algorithm = Algorithm.DFS;
+
+  showAlgorithmView = false;
 
   clearMessage = new Subject<void>();
 
-  constructor(public alg: AlgorithmService) { }
+  chosenAlgorithm = Algorithm.DFS;
+
+  constructor(private alg: AlgorithmService) { }
 
   ngOnInit(): void {
     this.resetWall();
@@ -36,5 +40,25 @@ export class MainComponent implements OnInit {
   clear(){
     this.resetWall();
     this.clearMessage.next();
+  }
+
+  toggleAlgorthmsView(){
+    this.showAlgorithmView = !this.showAlgorithmView;
+  }
+
+  callAlgorithm(){
+    this.alg.callAlgorithm(this.startPoint, this.endPoint, this.row, this.column, this.isWall, this.chosenAlgorithm);
+  }
+
+  chooseAlgorithmAndToggleView(alg: number){
+    switch(alg){
+      case 0: 
+        this.chosenAlgorithm = Algorithm.DFS;
+        break;
+      case 1: 
+        this.chosenAlgorithm = Algorithm.BFS;
+        break;
+    }
+    this.showAlgorithmView = false;
   }
 }

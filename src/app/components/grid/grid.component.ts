@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { AlgorithmService, Algorithm } from 'src/app/services/algorithm.service';
 import { Point } from 'src/app/Point';
-import { Observable } from 'rxjs';
+import { Observable, retry } from 'rxjs';
 
 @Component({
   selector: 'app-grid',
@@ -34,6 +34,8 @@ export class GridComponent implements OnInit {
   mooveStart: boolean = false;
   mooveEnd: boolean = false;
 
+  @Output() callAlgorihtm = new EventEmitter<void>();
+
   constructor(private alg: AlgorithmService) { }
 
   ngOnInit(): void {
@@ -63,6 +65,7 @@ export class GridComponent implements OnInit {
       for(let i = 0; i<path.length; i++){
         setTimeout(() => {this.isPath[path[i].x][path[i].y] = true;}, (visited.length+i)*10);
       }
+      setTimeout(() => {this.runVisualization = false}, (visited.length+path.length)*10);
     }
     else{
       for(let i = 0; i<visited.length; i++){
@@ -85,6 +88,9 @@ export class GridComponent implements OnInit {
   }
 
   handleMouseDown(x: number, y: number){
+    if(this.runAlgorithm && this.runVisualization){
+      return;
+    }
     if(this.isStartPoint(x, y)){
       this.mooveStart = true;
     }
@@ -113,16 +119,14 @@ export class GridComponent implements OnInit {
       this.startPoint = {x: x, y: y};
       this.startPointChange.emit(this.startPoint);
       if(this.runAlgorithm){
-        this.runVisualization = false;
-        this.alg.callAlgorithm(this.startPoint, this.endPoint, this.row, this.column, this.isWall, Algorithm.BFS);
+        this.callAlgorihtm.emit();
       }
     }
     else if(this.mooveEnd){
       this.endPoint = {x: x, y: y};
       this.endPointChange.emit(this.endPoint);
       if(this.runAlgorithm){
-        this.runVisualization = false;
-        this.alg.callAlgorithm(this.startPoint, this.endPoint, this.row, this.column, this.isWall, Algorithm.BFS);
+        this.callAlgorihtm.emit();
       }
     }
     else if(this.makeWall){

@@ -2,8 +2,24 @@
     background-color: rgba(25, 52, 69, 1);
     display: flex;
     justify-content: center;
-    padding: 20px;
+    padding: 10px;
     margin-bottom: 10px;
+}
+
+.algorithmViewHolder{
+    position: relative;
+}
+
+.algorithmView{
+    position: absolute;
+    left: 0%;
+    top: 160%;
+    width: max-content;
+    background-color: rgba(25, 52, 69, 1);
+}
+
+.algorithmView button{
+    display: block;
 }
 
 button{
