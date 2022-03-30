@@ -1,6 +1,8 @@
 <div [ngClass] = "{
-    visited: isVisited,
+    visited: isVisited&&animate&&!isWall,
     startPoint: isStart,
     endPoint: isEnd,
-    wall: isWall,
-    path: isPath}"></div>
+    path: isPath&&animate&&!isWall,
+    visitedWithoutAnimation: isVisited&&!animate&&!isPath&&!isWall,
+    pathWithoutAnimation: isPath&&!animate&&!isWall,
+    wall: isWall}"></div>

@@ -1,5 +1,5 @@
 div{
-    padding: 10px;
+    padding: 11px;
     border: 1px solid rgb(182, 215, 245);
     background-color: transparent;
 }
@@ -9,14 +9,30 @@ div{
     animation: visitedStartNodeBlueAnimation 2.0s ease-out 0s alternate forwards;
 }
 
+.visitedWithoutAnimation{
+  background-color: rgba(0, 190, 218, 0.75);
+}
+
+.path{
+  background-color: yellow;
+  animation: pathAnimation 1.0s ease-out 0s alternate forwards;
+  border: 1px solid yellow;
+}
+
+.pathWithoutAnimation{
+  border: 1px solid yellow;
+  background-color: yellow;
+}
+
 .startPoint{
     background-image: url(../../start.svg);
     background-size: 35px;
     background-position: center;
+    background-repeat: no-repeat;
 }
 
 .endPoint{
-    background: url(../../end.svg);
+    background-image: url(../../end.svg);
     background-size: 90px;
     background-position: center;
     background-repeat: no-repeat;
@@ -25,12 +41,6 @@ div{
 .wall{
   background-color: rgba(25, 52, 69, 1);
   border: 1px solid rgba(25, 52, 69, 1);
-}
-
-.path{
-  background-color: yellow;
-  animation: pathAnimation 1.0s ease-out 0s alternate forwards;
-  border: 1px solid yellow;
 }
 
 @keyframes pathAnimation{

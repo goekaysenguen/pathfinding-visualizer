@@ -1,8 +1,7 @@
 import { Component, Input, OnInit, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { AlgorithmService } from 'src/app/services/algorithm.service';
+import { AlgorithmService, Algorithm } from 'src/app/services/algorithm.service';
 import { Point } from 'src/app/Point';
 import { Observable } from 'rxjs';
-import { NumberValueAccessor } from '@angular/forms';
 
 @Component({
   selector: 'app-grid',
@@ -27,6 +26,8 @@ export class GridComponent implements OnInit {
 
   @Input() clear!: Observable<void>;
 
+  runVisualization: boolean = true;
+  runAlgorithm = false;
 
   makeWall: boolean = false;
   deleteWall: boolean = false;
@@ -40,7 +41,7 @@ export class GridComponent implements OnInit {
     this.numbersColumn = Array(this.column).fill(1).map((x, i) => {return i});
     this.resetVisitedAndPath();
     this.alg.getVisited().subscribe((visited: Point[]) => {this.update(visited)});
-    this.clear.subscribe(() => {this.resetVisitedAndPath()});
+    this.clear.subscribe(() => {this.resetVisitedAndPath(); this.runVisualization = true; this.runAlgorithm = false});
   }
 
   resetVisitedAndPath(){
@@ -53,13 +54,26 @@ export class GridComponent implements OnInit {
   }
 
   update(visited: Point[]){
-    for(let i = 0; i<visited.length; i++){
-      setTimeout(() => {this.isVisited[visited[i].x][visited[i].y] = true;}, i*10);
+    this.resetVisitedAndPath();
+    if(this.runVisualization){
+      for(let i = 0; i<visited.length; i++){
+        setTimeout(() => {this.isVisited[visited[i].x][visited[i].y] = true;}, i*10);
+      }
+      let path = this.alg.getPath(visited);
+      for(let i = 0; i<path.length; i++){
+        setTimeout(() => {this.isPath[path[i].x][path[i].y] = true;}, (visited.length+i)*10);
+      }
     }
-    let path = this.alg.getPath(visited);
-    for(let i = 0; i<path.length; i++){
-      setTimeout(() => {this.isPath[path[i].x][path[i].y] = true;}, (visited.length+i)*10);
+    else{
+      for(let i = 0; i<visited.length; i++){
+        this.isVisited[visited[i].x][visited[i].y] = true;
+      }
+      let path = this.alg.getPath(visited);
+      for(let i = 0; i<path.length; i++){
+        this.isPath[path[i].x][path[i].y] = true;
+      }
     }
+    this.runAlgorithm = true;
   }
 
   isStartPoint(x: number, y: number){
@@ -98,10 +112,18 @@ export class GridComponent implements OnInit {
     if(this.mooveStart){
       this.startPoint = {x: x, y: y};
       this.startPointChange.emit(this.startPoint);
+      if(this.runAlgorithm){
+        this.runVisualization = false;
+        this.alg.callAlgorithm(this.startPoint, this.endPoint, this.row, this.column, this.isWall, Algorithm.BFS);
+      }
     }
     else if(this.mooveEnd){
       this.endPoint = {x: x, y: y};
       this.endPointChange.emit(this.endPoint);
+      if(this.runAlgorithm){
+        this.runVisualization = false;
+        this.alg.callAlgorithm(this.startPoint, this.endPoint, this.row, this.column, this.isWall, Algorithm.BFS);
+      }
     }
     else if(this.makeWall){
       this.addWall(x, y);
