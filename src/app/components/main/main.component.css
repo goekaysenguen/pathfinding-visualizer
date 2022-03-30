@@ -20,6 +20,7 @@
 
 .algorithmView button{
     display: block;
+    padding: 5px;
 }
 
 button{

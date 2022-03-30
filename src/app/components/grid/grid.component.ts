@@ -57,6 +57,8 @@ export class GridComponent implements OnInit {
 
   update(visited: Point[]){
     this.resetVisitedAndPath();
+    let animationDuration = 2000;
+
     if(this.runVisualization){
       for(let i = 0; i<visited.length; i++){
         setTimeout(() => {this.isVisited[visited[i].x][visited[i].y] = true;}, i*10);
@@ -65,7 +67,7 @@ export class GridComponent implements OnInit {
       for(let i = 0; i<path.length; i++){
         setTimeout(() => {this.isPath[path[i].x][path[i].y] = true;}, (visited.length+i)*10);
       }
-      setTimeout(() => {this.runVisualization = false}, (visited.length+path.length)*10);
+      setTimeout(() => {this.runVisualization = false}, (visited.length)*10+animationDuration);
     }
     else{
       for(let i = 0; i<visited.length; i++){
