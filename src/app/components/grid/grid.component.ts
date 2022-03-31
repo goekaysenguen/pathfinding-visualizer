@@ -16,8 +16,8 @@ export class GridComponent implements OnInit {
 
   isVisited: boolean[][] = []
   isPath: boolean[][] = [];
-  @Input() isWall: boolean[][] = [];
-  @Output() isWallChange: EventEmitter<boolean[][]> = new EventEmitter();
+  @Input() wall: boolean[][] = [];
+  @Output() wallChange: EventEmitter<boolean[][]> = new EventEmitter();
 
   @Input() startPoint!: Point;
   @Output() startPointChange = new EventEmitter<Point>();
@@ -44,6 +44,14 @@ export class GridComponent implements OnInit {
     this.resetVisitedAndPath();
     this.alg.getVisited().subscribe((visited: Point[]) => {this.update(visited)});
     this.clear.subscribe(() => {this.resetVisitedAndPath(); this.runVisualization = true; this.runAlgorithmWhenMoovingStartOrEnd = false});
+    this.alg.getWall().subscribe((wall: Point[]) => {this.updateWall(wall)});
+  }
+
+  updateWall(newWall: Point[]){
+    let delayMultiplier = 10;
+    for(let i = 0; i<newWall.length; i++){
+      setTimeout(() => {this.wall[newWall[i].x][newWall[i].y] = true;}, i*delayMultiplier);
+    }
   }
 
   resetVisitedAndPath(){
@@ -108,7 +116,7 @@ export class GridComponent implements OnInit {
     else if(this.isEndPoint(x, y)){
       this.mooveEnd = true;
     }
-    else if(!this.isWall[x][y]){
+    else if(!this.wall[x][y]){
       this.makeWall = true;
       this.addWall(x, y);
     }
@@ -149,12 +157,12 @@ export class GridComponent implements OnInit {
   }
 
   addWall(x: number, y: number){
-    this.isWall[x][y] = true;
-    this.isWallChange.emit(this.isWall);
+    this.wall[x][y] = true;
+    this.wallChange.emit(this.wall);
   }
 
   removeWall(x: number, y: number){
-    this.isWall[x][y] = false;
-    this.isWallChange.emit(this.isWall);
+    this.wall[x][y] = false;
+    this.wallChange.emit(this.wall);
   }
 }

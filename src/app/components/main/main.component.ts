@@ -16,7 +16,7 @@ export class MainComponent implements OnInit {
   column = (window.screen.width / NodeComponent.nodeSize)-1;
   startPoint: Point = {x: Math.floor(this.column/4), y: Math.floor(this.row/2)};
   endPoint: Point = {x: Math.floor(this.column*3/4), y: Math.floor(this.row/2)};
-  isWall: boolean[][] = [];
+  wall: boolean[][] = [];
 
   showAlgorithmView = false;
 
@@ -31,9 +31,9 @@ export class MainComponent implements OnInit {
   }
 
   resetWall(){
-    this.isWall = [];
+    this.wall = [];
     for(let i = 0; i<this.column; i++){
-      this.isWall.push(Array(this.row).fill(false));
+      this.wall.push(Array(this.row).fill(false));
     }
   }
 
@@ -47,7 +47,7 @@ export class MainComponent implements OnInit {
   }
 
   callAlgorithm(){
-    this.alg.callAlgorithm(this.startPoint, this.endPoint, this.row, this.column, this.isWall, this.chosenAlgorithm);
+    this.alg.callPathfindingAlgorithm(this.startPoint, this.endPoint, this.row, this.column, this.wall, this.chosenAlgorithm);
   }
 
   chooseAlgorithmAndHideView(alg: number){
@@ -60,5 +60,9 @@ export class MainComponent implements OnInit {
         break;
     }
     this.showAlgorithmView = false;
+  }
+
+  callMaze(){
+    this.alg.callMazeAlgorithm(this.column, this.row, this.startPoint, this.endPoint);
   }
 }

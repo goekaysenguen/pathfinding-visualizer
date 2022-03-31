@@ -8,5 +8,6 @@
 </div>
 <button (click)="callAlgorithm()">Visualize</button>
 <button (click)="clear()">clear</button>
+<button (click)="callMaze()">maze</button>
 </div>
-<app-grid [row]="row" [column]="column" [(startPoint)]="startPoint" [(endPoint)]="endPoint" [(isWall)]="isWall" [clear]="clearMessage.asObservable()" (callAlgorihtm)="callAlgorithm()"></app-grid>
+<app-grid [row]="row" [column]="column" [(startPoint)]="startPoint" [(endPoint)]="endPoint" [(wall)]="wall" [clear]="clearMessage.asObservable()" (callAlgorihtm)="callAlgorithm()"></app-grid>
