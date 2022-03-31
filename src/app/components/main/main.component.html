@@ -1,11 +1,9 @@
 <div class="nav">
-<!--<button (click)="alg.callAlgorithm(startPoint, endPoint, row, column, isWall, bfs)">bfs</button>
-<button (click)="alg.callAlgorithm(startPoint, endPoint, row, column, isWall, dfs)">dfs</button>-->
 <div class="algorithmViewHolder">
     <button (click)="toggleAlgorthmsView()">Algorithms</button>
     <div *ngIf="showAlgorithmView" class="algorithmView">
-        <button (click)="chooseAlgorithmAndToggleView(0)">Depth-first Search</button>
-        <button (click)="chooseAlgorithmAndToggleView(1)">Breadth-first Search</button>
+        <button (click)="chooseAlgorithmAndHideView(0)">Depth-first Search</button>
+        <button (click)="chooseAlgorithmAndHideView(1)">Breadth-first Search</button>
     </div>
 </div>
 <button (click)="callAlgorithm()">Visualize</button>

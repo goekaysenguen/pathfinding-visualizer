@@ -14,8 +14,8 @@ export class MainComponent implements OnInit {
   
   row = 20;
   column = (window.screen.width / NodeComponent.nodeSize)-1;
-  startPoint: Point = {x: 0, y: 2};
-  endPoint: Point = {x: 0, y: 5};
+  startPoint: Point = {x: Math.floor(this.column/4), y: Math.floor(this.row/2)};
+  endPoint: Point = {x: Math.floor(this.column*3/4), y: Math.floor(this.row/2)};
   isWall: boolean[][] = [];
 
   showAlgorithmView = false;
@@ -50,7 +50,7 @@ export class MainComponent implements OnInit {
     this.alg.callAlgorithm(this.startPoint, this.endPoint, this.row, this.column, this.isWall, this.chosenAlgorithm);
   }
 
-  chooseAlgorithmAndToggleView(alg: number){
+  chooseAlgorithmAndHideView(alg: number){
     switch(alg){
       case 0: 
         this.chosenAlgorithm = Algorithm.DFS;

@@ -18,7 +18,5 @@ export class NodeComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-    console.log(this.animate);
-  }
+  ngOnInit(): void { }
 }
