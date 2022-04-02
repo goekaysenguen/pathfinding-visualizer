@@ -1,9 +1,16 @@
 .nav{
+    position: relative;
     background-color: rgba(25, 52, 69, 1);
     display: flex;
     justify-content: center;
     padding: 10px;
     margin-bottom: 10px;
+    z-index: 0;
+}
+
+.gridHolder{
+    position: relative;
+    z-index: -1;
 }
 
 .algorithmViewHolder{
