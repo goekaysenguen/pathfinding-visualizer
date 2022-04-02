@@ -1,4 +1,3 @@
-import { SafeKeyedRead } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Point } from '../Point';
@@ -123,7 +122,8 @@ export class AlgorithmService {
     return false;
   }
 
-  getPath(visited: Point[]): Point[]{
+  getPath(visited: Point[], endPoint: Point): Point[] | undefined{
+    if(visited[visited.length-1].x != endPoint.x || visited[visited.length-1].y != endPoint.y) return undefined;
     let path: Point[] = [];
     let tmp: Point | undefined = visited[visited.length-1];
     while(tmp){
@@ -154,26 +154,55 @@ export class AlgorithmService {
     for(let i = 0; i<width; i++){
       wall.push({x: i, y: height-1});
     }
-    this.recursiveDivision(wall, 1, 1, width-2, height-2, this.chooseOrientation(width-2, height-2), startPoint, endPoint, 7);
+    this.recursiveDivision(wall, 1, 1, width-2, height-2, this.chooseOrientation(width-2, height-2), startPoint, endPoint, new Array<Point>());
     this.wallSubject.next(wall);
   }
 
-  private recursiveDivision(wall: Point[], x: number, y: number, width: number, height: number, orientation: Orientation, startPoint: Point, endPoint: Point, depth: number){
-    if(width < 2 || height< 2) return;
+  checkIfWallCollidesWithPassage(passages: Point[], wx: number, wy: number, orientation: Orientation, length: number): boolean{
+    let minValueForCollision = ((orientation === Orientation.HORIZONTAL)? wx : wy)-1;
+    let maxValueForCollision = ((orientation === Orientation.HORIZONTAL)? wx+length : wy+length)+1;
 
+    let possibleCollisionIndex = -1;
+    while(true){
+      let tmp = passages.slice(possibleCollisionIndex+1);
+      let previousCollisionIndex = possibleCollisionIndex;
+      possibleCollisionIndex = tmp.findIndex((point: Point) => {
+        return (orientation === Orientation.HORIZONTAL)? point.y == wy : point.x == wx;
+      });
+      if(tmp.length == 0 || possibleCollisionIndex == -1) break;
+      possibleCollisionIndex += previousCollisionIndex+1
+      let furtherCheck = (orientation === Orientation.HORIZONTAL)? passages[possibleCollisionIndex].x : passages[possibleCollisionIndex].y;
+      if(minValueForCollision <= furtherCheck && furtherCheck <= maxValueForCollision) return true;
+    }
+    return false;
+  }
+
+  private recursiveDivision(wall: Point[], x: number, y: number, width: number, height: number, orientation: Orientation, startPoint: Point, endPoint: Point, passages: Point[]){
+    if(width < 2 || height < 2) return;
+    if(width == 2 && orientation === Orientation.VERTICAL || height == 2 && orientation === Orientation.HORIZONTAL) return;
+
+    let lengthOfWall = (orientation === Orientation.HORIZONTAL)? width : height;
     //where will the wall be drawn from
-    let wx = x + ((orientation === Orientation.HORIZONTAL) ? 0 : this.getRandomInt(width-2)+1);
-    let wy = y + ((orientation === Orientation.HORIZONTAL) ? this.getRandomInt(height-2)+1 : 0);
 
-    //where will the passage through the wall be
-    let px = wx + ((orientation === Orientation.HORIZONTAL) ? this.getRandomInt(width) : 0);
-    let py = wy + ((orientation === Orientation.HORIZONTAL) ? 0 : this.getRandomInt(height));
+    let numberOfIteration = 10000;
+    do{
+      if(numberOfIteration == 0){
+        return;
+      }
+      var wx = x + ((orientation === Orientation.HORIZONTAL)? 0 : this.getRandomInt(width-2)+1);
+      var wy = y + ((orientation === Orientation.HORIZONTAL)? this.getRandomInt(height-2)+1: 0);
+      numberOfIteration--;
+    }while(this.checkIfWallCollidesWithPassage(passages, wx, wy, orientation, lengthOfWall));
 
-    let dx = (orientation === Orientation.HORIZONTAL) ? 1 : 0;
-    let dy = (orientation === Orientation.HORIZONTAL) ? 0 : 1;
+    var px = wx + ((orientation === Orientation.HORIZONTAL)? this.getRandomInt(width) : 0);
+    var py = wy + ((orientation === Orientation.HORIZONTAL)? 0 : this.getRandomInt(height));
+    passages.push({x: px, y: py});
 
-    let length = (orientation === Orientation.HORIZONTAL) ? width : height;
-    for(let i = 0; i<length; i++){
+    let dx = (orientation === Orientation.HORIZONTAL)? 1 : 0;
+    let dy = (orientation === Orientation.HORIZONTAL)? 0 : 1;
+
+    
+    for(let i = 0; i<lengthOfWall; i++){
       if(!(wx == px && wy == py || wx == startPoint.x && wy == startPoint.y || wx == endPoint.x && wy == endPoint.y)){
         wall.push({x: wx, y: wy});
       }
@@ -181,20 +210,17 @@ export class AlgorithmService {
       wy += dy;
     }
 
-
     let newX = x;
     let newY = y;
     let newWidth = (orientation === Orientation.HORIZONTAL) ? width : wx-x;
     let newHeight = (orientation === Orientation.HORIZONTAL) ? wy-y : height;
-    //console.log(newX + " " + newY + " " + newWidth + " " + newHeight);
-    this.recursiveDivision(wall, newX, newY, newWidth, newHeight, this.chooseOrientation(newWidth, newHeight), startPoint, endPoint, depth-1);
-
-    newX = (orientation === Orientation.HORIZONTAL) ? x : wx+1;
-    newY = (orientation === Orientation.HORIZONTAL) ? wy+1 : y;
-    newWidth = (orientation === Orientation.HORIZONTAL) ? width : width-wx;
-    newHeight = (orientation === Orientation.HORIZONTAL) ? height-wy : height;
-    //console.log(newX + " " + newY + " " + newWidth + " " + newHeight);
-    this.recursiveDivision(wall, newX, newY, newWidth, newHeight, this.chooseOrientation(newWidth, newHeight), startPoint, endPoint, depth-1);
+    this.recursiveDivision(wall, newX, newY, newWidth, newHeight, this.chooseOrientation(newWidth, newHeight), startPoint, endPoint, passages);
+    
+    newX = (orientation === Orientation.HORIZONTAL)? x : wx+1;
+    newY = (orientation === Orientation.HORIZONTAL)? wy+1 : y;
+    newWidth = (orientation === Orientation.HORIZONTAL)? width : width-(wx-x+1);
+    newHeight = (orientation === Orientation.HORIZONTAL)? height-(wy-y+1) : height;
+    this.recursiveDivision(wall, newX, newY, newWidth, newHeight, this.chooseOrientation(newWidth, newHeight), startPoint, endPoint, passages);
   }
 
   private chooseOrientation(width: number, height: number): Orientation{

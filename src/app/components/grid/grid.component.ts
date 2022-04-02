@@ -27,7 +27,7 @@ export class GridComponent implements OnInit {
   @Input() clear!: Observable<void>;
 
   runVisualization: boolean = true;
-  runAlgorithmWhenMoovingStartOrEnd = false;
+  runAlgorithmWhenChangeOnBoard = false;
 
   makeWall: boolean = false;
   deleteWall: boolean = false;
@@ -43,7 +43,7 @@ export class GridComponent implements OnInit {
     this.numbersColumn = Array(this.column).fill(1).map((x, i) => {return i});
     this.resetVisitedAndPath();
     this.alg.getVisited().subscribe((visited: Point[]) => {this.update(visited)});
-    this.clear.subscribe(() => {this.resetVisitedAndPath(); this.runVisualization = true; this.runAlgorithmWhenMoovingStartOrEnd = false});
+    this.clear.subscribe(() => {this.resetVisitedAndPath(); this.runVisualization = true; this.runAlgorithmWhenChangeOnBoard = false});
     this.alg.getWall().subscribe((wall: Point[]) => {this.updateWall(wall)});
   }
 
@@ -69,18 +69,20 @@ export class GridComponent implements OnInit {
     for(let i = 0; i<visited.length; i++){
       setTimeout(() => {this.isVisited[visited[i].x][visited[i].y] = true;}, i*delayMultiplier);
     }
-    let path = this.alg.getPath(visited);
-    for(let i = 0; i<path.length; i++){
-      setTimeout(() => {this.isPath[path[i].x][path[i].y] = true;}, (visited.length+i)*delayMultiplier);
+    let path = this.alg.getPath(visited, this.endPoint);
+    if(!path){return;}
+    for(let i = 0; i<path!.length; i++){
+      setTimeout(() => {this.isPath[path![i].x][path![i].y] = true;}, (visited.length+i)*delayMultiplier);
     }
     setTimeout(() => {this.runVisualization = false}, (visited.length)*delayMultiplier+animationDuration);
   }
 
   updateWithoutDelay(visited: Point[]){
     for(let i = 0; i<visited.length; i++){
-      this.isVisited[visited[i].x][visited[i].y] = true;
+    this.isVisited[visited[i].x][visited[i].y] = true;
     }
-    let path = this.alg.getPath(visited);
+    let path = this.alg.getPath(visited, this.endPoint);
+    if(!path){return;}
     for(let i = 0; i<path.length; i++){
       this.isPath[path[i].x][path[i].y] = true;
     }
@@ -94,7 +96,7 @@ export class GridComponent implements OnInit {
     else{
       this.updateWithoutDelay(visited);
     }
-    this.runAlgorithmWhenMoovingStartOrEnd = true;
+    this.runAlgorithmWhenChangeOnBoard = true;
   }
 
   isStartPoint(x: number, y: number){
@@ -106,7 +108,7 @@ export class GridComponent implements OnInit {
   }
 
   handleMouseDown(x: number, y: number){
-    if(this.runAlgorithmWhenMoovingStartOrEnd && this.runVisualization){
+    if(this.runAlgorithmWhenChangeOnBoard && this.runVisualization){
       return;
     }
 
@@ -137,14 +139,14 @@ export class GridComponent implements OnInit {
     if(this.mooveStart){
       this.startPoint = {x: x, y: y};
       this.startPointChange.emit(this.startPoint);
-      if(this.runAlgorithmWhenMoovingStartOrEnd){
+      if(this.runAlgorithmWhenChangeOnBoard){
         this.callAlgorihtm.emit();
       }
     }
     else if(this.mooveEnd){
       this.endPoint = {x: x, y: y};
       this.endPointChange.emit(this.endPoint);
-      if(this.runAlgorithmWhenMoovingStartOrEnd){
+      if(this.runAlgorithmWhenChangeOnBoard){
         this.callAlgorihtm.emit();
       }
     }
@@ -159,10 +161,16 @@ export class GridComponent implements OnInit {
   addWall(x: number, y: number){
     this.wall[x][y] = true;
     this.wallChange.emit(this.wall);
+    if(this.runAlgorithmWhenChangeOnBoard){
+      this.callAlgorihtm.emit();
+    }
   }
 
   removeWall(x: number, y: number){
     this.wall[x][y] = false;
     this.wallChange.emit(this.wall);
+    if(this.runAlgorithmWhenChangeOnBoard){
+      this.callAlgorihtm.emit();
+    }
   }
 }
