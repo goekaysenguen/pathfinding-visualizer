@@ -162,16 +162,18 @@ export class AlgorithmService {
     let minValueForCollision = ((orientation === Orientation.HORIZONTAL)? wx : wy)-1;
     let maxValueForCollision = ((orientation === Orientation.HORIZONTAL)? wx+length : wy+length)+1;
 
-    let possibleCollisionIndex = -1;
+    let possibleCollisionIndexWithRespectToTmp = -1;
+    let possibleCollisionIndexWithRespectToPassages = -1;
     while(true){
-      let tmp = passages.slice(possibleCollisionIndex+1);
-      let previousCollisionIndex = possibleCollisionIndex;
-      possibleCollisionIndex = tmp.findIndex((point: Point) => {
+      let tmp = passages.slice(possibleCollisionIndexWithRespectToPassages+1);
+      possibleCollisionIndexWithRespectToTmp = tmp.findIndex((point: Point) => {
         return (orientation === Orientation.HORIZONTAL)? point.y == wy : point.x == wx;
       });
-      if(tmp.length == 0 || possibleCollisionIndex == -1) break;
-      possibleCollisionIndex += previousCollisionIndex+1
-      let furtherCheck = (orientation === Orientation.HORIZONTAL)? passages[possibleCollisionIndex].x : passages[possibleCollisionIndex].y;
+      if(tmp.length == 0 || possibleCollisionIndexWithRespectToTmp == -1) break;
+      
+      let previousCollisionIndex = possibleCollisionIndexWithRespectToPassages;
+      possibleCollisionIndexWithRespectToPassages = possibleCollisionIndexWithRespectToTmp + previousCollisionIndex + 1
+      let furtherCheck = (orientation === Orientation.HORIZONTAL)? passages[possibleCollisionIndexWithRespectToPassages].x : passages[possibleCollisionIndexWithRespectToPassages].y;
       if(minValueForCollision <= furtherCheck && furtherCheck <= maxValueForCollision) return true;
     }
     return false;
