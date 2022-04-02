@@ -142,18 +142,31 @@ export class AlgorithmService {
     return Math.floor(Math.random()*max);
   }
 
+  checkForCollisionWithStartOrEndPoint(x: number, y: number, startPoint: Point, endPoint: Point){
+    if(x == startPoint.x && y == startPoint.y || x == endPoint.x && y == endPoint.y) return true;
+    return false;
+  }
+
   callMazeAlgorithm(width: number, height: number, startPoint: Point, endPoint: Point){
     let wall: Point[] = [];
+
     for(let i = 0; i<width; i++){
+      if(this.checkForCollisionWithStartOrEndPoint(i, 0, startPoint, endPoint)) continue;
       wall.push({x:i, y:0});
     }
+
     for(let i = 0; i<height; i++){
+      if(this.checkForCollisionWithStartOrEndPoint(0, i, startPoint, endPoint)) continue;
       wall.push({x: 0, y: i});
+      if(this.checkForCollisionWithStartOrEndPoint(width-1, i, startPoint, endPoint)) continue;
       wall.push({x: width-1, y: i});
     }
+
     for(let i = 0; i<width; i++){
+      if(this.checkForCollisionWithStartOrEndPoint(i, height-1, startPoint, endPoint)) continue;
       wall.push({x: i, y: height-1});
     }
+    
     this.recursiveDivision(wall, 1, 1, width-2, height-2, this.chooseOrientation(width-2, height-2), startPoint, endPoint, new Array<Point>());
     this.wallSubject.next(wall);
   }
@@ -205,7 +218,7 @@ export class AlgorithmService {
 
     
     for(let i = 0; i<lengthOfWall; i++){
-      if(!(wx == px && wy == py || wx == startPoint.x && wy == startPoint.y || wx == endPoint.x && wy == endPoint.y)){
+      if(!(wx == px && wy == py || this.checkForCollisionWithStartOrEndPoint(wx, wy, startPoint, endPoint))){
         wall.push({x: wx, y: wy});
       }
       wx += dx;
