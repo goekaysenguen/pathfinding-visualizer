@@ -167,7 +167,7 @@ export class AlgorithmService {
       wall.push({x: i, y: height-1});
     }
     
-    this.recursiveDivision(wall, 1, 1, width-2, height-2, this.chooseOrientation(width-2, height-2), startPoint, endPoint, new Array<Point>());
+    this.recursiveDivision(wall, 1, 1, width-2, height-2, this.chooseOrientation(width-2, height-2), startPoint, endPoint, new Array<Point>(), true);
     this.wallSubject.next(wall);
   }
 
@@ -192,16 +192,17 @@ export class AlgorithmService {
     return false;
   }
 
-  private recursiveDivision(wall: Point[], x: number, y: number, width: number, height: number, orientation: Orientation, startPoint: Point, endPoint: Point, passages: Point[]){
+  private recursiveDivision(wall: Point[], x: number, y: number, width: number, height: number, orientation: Orientation, startPoint: Point, endPoint: Point, passages: Point[], tryNewOrientation: boolean){
     if(width < 2 || height < 2) return;
     if(width == 2 && orientation === Orientation.VERTICAL || height == 2 && orientation === Orientation.HORIZONTAL) return;
 
     let lengthOfWall = (orientation === Orientation.HORIZONTAL)? width : height;
+    
     //where will the wall be drawn from
-
     let numberOfIteration = 10000;
     do{
       if(numberOfIteration == 0){
+        if(tryNewOrientation) {this.recursiveDivision(wall, x, y, width, height, (orientation === Orientation.HORIZONTAL)? Orientation.VERTICAL : Orientation.HORIZONTAL, startPoint, endPoint, passages, false);}
         return;
       }
       var wx = x + ((orientation === Orientation.HORIZONTAL)? 0 : this.getRandomInt(width-2)+1);
@@ -229,13 +230,13 @@ export class AlgorithmService {
     let newY = y;
     let newWidth = (orientation === Orientation.HORIZONTAL) ? width : wx-x;
     let newHeight = (orientation === Orientation.HORIZONTAL) ? wy-y : height;
-    this.recursiveDivision(wall, newX, newY, newWidth, newHeight, this.chooseOrientation(newWidth, newHeight), startPoint, endPoint, passages);
+    this.recursiveDivision(wall, newX, newY, newWidth, newHeight, this.chooseOrientation(newWidth, newHeight), startPoint, endPoint, passages, true);
     
     newX = (orientation === Orientation.HORIZONTAL)? x : wx+1;
     newY = (orientation === Orientation.HORIZONTAL)? wy+1 : y;
     newWidth = (orientation === Orientation.HORIZONTAL)? width : width-(wx-x+1);
     newHeight = (orientation === Orientation.HORIZONTAL)? height-(wy-y+1) : height;
-    this.recursiveDivision(wall, newX, newY, newWidth, newHeight, this.chooseOrientation(newWidth, newHeight), startPoint, endPoint, passages);
+    this.recursiveDivision(wall, newX, newY, newWidth, newHeight, this.chooseOrientation(newWidth, newHeight), startPoint, endPoint, passages, true);
   }
 
   private chooseOrientation(width: number, height: number): Orientation{
