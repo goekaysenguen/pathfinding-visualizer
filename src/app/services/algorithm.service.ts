@@ -151,20 +151,17 @@ export class AlgorithmService {
     let wall: Point[] = [];
 
     for(let i = 0; i<width; i++){
-      if(this.checkForCollisionWithStartOrEndPoint(i, 0, startPoint, endPoint)) continue;
-      wall.push({x:i, y:0});
+      if(!this.checkForCollisionWithStartOrEndPoint(i, 0, startPoint, endPoint))
+        wall.push({x:i, y:0});
+      if(!this.checkForCollisionWithStartOrEndPoint(i, height-1, startPoint, endPoint))
+        wall.push({x: i, y: height-1});
     }
 
     for(let i = 0; i<height; i++){
-      if(this.checkForCollisionWithStartOrEndPoint(0, i, startPoint, endPoint)) continue;
-      wall.push({x: 0, y: i});
-      if(this.checkForCollisionWithStartOrEndPoint(width-1, i, startPoint, endPoint)) continue;
-      wall.push({x: width-1, y: i});
-    }
-
-    for(let i = 0; i<width; i++){
-      if(this.checkForCollisionWithStartOrEndPoint(i, height-1, startPoint, endPoint)) continue;
-      wall.push({x: i, y: height-1});
+      if(!this.checkForCollisionWithStartOrEndPoint(0, i, startPoint, endPoint))
+        wall.push({x: 0, y: i});
+      if(!this.checkForCollisionWithStartOrEndPoint(width-1, i, startPoint, endPoint))
+        wall.push({x: width-1, y: i});
     }
     
     this.recursiveDivision(wall, 1, 1, width-2, height-2, this.chooseOrientation(width-2, height-2), startPoint, endPoint, new Array<Point>(), true);
