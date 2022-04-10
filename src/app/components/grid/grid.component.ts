@@ -136,18 +136,14 @@ export class GridComponent implements OnInit {
   }
 
   handleMouseOver(x: number, y: number){
-    if(this.mooveStart){
-      this.startPoint = {x: x, y: y};
-      this.startPointChange.emit(this.startPoint);
+    if(this.mooveStart || this.mooveEnd){
+      let newPoint = {x: x, y: y}
+      this.startPoint = (this.mooveStart)? newPoint : this.startPoint
+      this.endPoint = (this.mooveEnd)? newPoint : this.endPoint
+      let changePointChange = (this.mooveStart)? this.startPointChange : this.endPointChange
+      changePointChange.emit(newPoint)
       if(this.runAlgorithmWhenChangeOnBoard){
-        this.callAlgorihtm.emit();
-      }
-    }
-    else if(this.mooveEnd){
-      this.endPoint = {x: x, y: y};
-      this.endPointChange.emit(this.endPoint);
-      if(this.runAlgorithmWhenChangeOnBoard){
-        this.callAlgorihtm.emit();
+        this.callAlgorihtm.emit()
       }
     }
     else if(this.makeWall){
