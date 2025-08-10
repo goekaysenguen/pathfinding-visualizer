@@ -1,15 +1,16 @@
 <div class="nav">
-<div class="algorithmViewHolder">
-    <button (click)="toggleAlgorthmsView()">Algorithms</button>
-    <div *ngIf="showAlgorithmView" class="algorithmView">
-        <button (click)="chooseAlgorithmAndHideView(0)">Depth-first Search</button>
-        <button (click)="chooseAlgorithmAndHideView(1)">Breadth-first Search</button>
+    <div class="algorithmViewHolder">
+        <button (click)="toggleAlgorthmsView()">Algorithms</button>
+        <div *ngIf="showAlgorithmView" class="algorithmView">
+            <button (click)="chooseAlgorithmAndHideView(0)">Depth-first Search</button>
+            <button (click)="chooseAlgorithmAndHideView(1)">Breadth-first Search</button>
+        </div>
     </div>
-</div>
-<button (click)="callAlgorithm()">Visualize</button>
-<button (click)="clear()">clear</button>
-<button (click)="callMaze()">maze</button>
+    <button (click)="callAlgorithm()">Visualize</button>
+    <button (click)="clear()">clear</button>
+    <button (click)="callMaze()">maze</button>
 </div>
 <div class="gridHolder">
-<app-grid [row]="row" [column]="column" [(startPoint)]="startPoint" [(endPoint)]="endPoint" [(wall)]="wall" [clear]="clearMessage.asObservable()" (callAlgorihtm)="callAlgorithm()"></app-grid>
+    <app-grid [row]="row" [column]="column" [(startPoint)]="startPoint" [(endPoint)]="endPoint" [(wall)]="wall"
+        [clear]="clearMessage.asObservable()" (callAlgorihtm)="callAlgorithm()"></app-grid>
 </div>

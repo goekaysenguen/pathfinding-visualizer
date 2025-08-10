@@ -199,7 +199,9 @@ export class AlgorithmService {
     let numberOfIteration = 10000;
     do{
       if(numberOfIteration == 0){
-        if(tryNewOrientation) {this.recursiveDivision(wall, x, y, width, height, (orientation === Orientation.HORIZONTAL)? Orientation.VERTICAL : Orientation.HORIZONTAL, startPoint, endPoint, passages, false);}
+        if(tryNewOrientation) {
+          this.recursiveDivision(wall, x, y, width, height, (orientation === Orientation.HORIZONTAL)? Orientation.VERTICAL : Orientation.HORIZONTAL, startPoint, endPoint, passages, false);
+        }
         return;
       }
       var wx = x + ((orientation === Orientation.HORIZONTAL)? 0 : this.getRandomInt(width-2)+1);
